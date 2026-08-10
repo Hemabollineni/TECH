@@ -1,1 +1,18 @@
+Postman
+
+What is postman?
+A tool to send requests receive respone and test Api end points of the server.
+
+Why post man?
+Because they want to verify whether an API works before connecting it to a frontend or another application.
+Simple analogy : Think of a REST API as a waiter in a restaurant.
+    Client → Customer
+    REST API → Waiter
+    Database → Kitchen
+Normally, the customer orders through a menu (the frontend application).
+
+With Postman, you're talking directly to the waiter, skipping the menu. You can ask for any operation (GET, POST, PUT, DELETE) and immediately see the response.
+
+
+
 
