@@ -63,8 +63,7 @@ TYPES OF REQUCESTS:
 | Update Employee    | PUT    | `http://localhost:8080/employees/1` |
 | Delete Employee    | DELETE | `http://localhost:8080/employees/1` |
 
-Now, we gone practice on some free api from JSONPLACE HOLDERS. 
-"""To practice in postman"""
+
 
 Environments:-
 --------------
@@ -108,6 +107,14 @@ So:
             Environment = variable values
             Workspace = container that organizes both    """""""""
 
+Variabels:
+-----------
+A variable is simply a name that stores a value.
+For example: base_url = http://localhost:8080
+Here:    base_url → variable name
+         http://localhost:8080 → variable value
+
+
 POSTMAN Requects:
 ------------------
 GET    /employees       → retrieve
@@ -127,10 +134,35 @@ Here you're filtering employees.
 
 
 
+Create Workspace
+       ↓
+Create Collection
+       ↓
+Create Local Environment
+       ↓
+Set {{base_url}}
+       ↓
+Create GET request
+       ↓
+Create POST request + JSON body
+       ↓
+Create PUT request
+       ↓
+Create DELETE request
+       ↓
+Check status codes
+       ↓
+Check JSON responses
+       ↓
+Add authentication
+       ↓
+Write basic tests
 
 
 
 
+Now, we gone practice on some free api from JSONPLACE HOLDERS. 
+"""To practice in postman"""
 
 
 
