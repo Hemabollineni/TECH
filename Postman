@@ -10,8 +10,54 @@ Simple analogy : Think of a REST API as a waiter in a restaurant.
     REST API → Waiter
     Database → Kitchen
 Normally, the customer orders through a menu (the frontend application).
-
 With Postman, you're talking directly to the waiter, skipping the menu. You can ask for any operation (GET, POST, PUT, DELETE) and immediately see the response.
+
+What is Collections?
+A Collection in Postman is a folder that stores related API requests.
+
+For example, if you're building an Employee Management API, instead of keeping requests scattered, you group them into one collection.
+
+Example:    Employee Management API (Collection)
+            │
+            ├── GET All Employees
+            ├── GET Employee by ID
+            ├── POST Add Employee
+            ├── PUT Update Employee
+            └── DELETE Employee
+
+How do you create collection?
+open postman
+click the NEW(+) button
+select the collection
+Enter the collection name[EMA] , (Optional) Add a description such as : Collection for Employee CRUD REST APIs.
+
+TYPES OF REQUCESTS:
+| Request Name       | Method | URL                                 |
+| ------------------ | ------ | ----------------------------------- |
+| Get Employees      | GET    | `http://localhost:8080/employees`   |
+| Get Employee by ID | GET    | `http://localhost:8080/employees/1` |
+| Add Employee       | POST   | `http://localhost:8080/employees`   |
+| Update Employee    | PUT    | `http://localhost:8080/employees/1` |
+| Delete Employee    | DELETE | `http://localhost:8080/employees/1` |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
