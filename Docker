@@ -42,19 +42,67 @@ It:
 -Deletes containers
 -Downloads images
 
-3. Docker Image
-An Image is a read-only blueprint.
-It contains : Application, Libraries, Runtime, Configuration
+3. Docker Image:
+A Docker image is the template used to create containers.
+  An Image is a read-only blueprint.
+    It contains : Application, Libraries, Runtime, Configuration
 
 Example: Python, Flask, requirements.txt, app.py
   Together these become one image.
 
+4.Docker Container:
+A Container is a running instance of an image.
+  Example: Employee API Container
+    Running.
+  Another: Employee API Container
+    Running.
+    Both came from the same image.
+
+| Command                       | Creates Container | Starts Container            |
+| ----------------------------- | ----------------- | --------------------------- |
+| `docker run nginx`            | ✅ Yes             | ✅ Yes                       |
+| `docker create nginx`         | ✅ Yes             | ❌ No                        |
+| `docker start container-name` | ❌ No              | ✅ Starts existing container |
+
+Container ఒక image ఆధారంగా create అవుతుంది. docker run అనేది create చేసి start చేస్తుంది; docker create అనేది create మాత్రమే చేస్తుంది.
+
+IMAGE = Docker local storage లో ఉంటుంది
+          ↓ used by
+CONTAINER = Docker create చేసి manage చేసే running/stopped instance
+
+How Docker Runs an Application
+-------------------------------
+Suppose you have: Employee REST API
+Step 1 : Write the code.
+app.py
+
+Step 2 : Create a Dockerfile.
+  FROM python:3.12
+  COPY . .
+  RUN pip install -r requirements.txt
+  CMD ["python","app.py"]
+
+Step 3 : Build an image.
+docker build -t employee-api .
+  Docker creates: employee-api image
+
+Step 4 : Run the image.
+  docker run employee-api and Docker creates a container.
+Inside that container: Python, Flask, Libraries, Employee API
+Everything starts automatically.
 
 
+| Concept       | Meaning                               |
+| ------------- | ------------------------------------- |
+| Docker        | Platform to create and run containers |
+| Image         | Blueprint/template of an application  |
+| Container     | Running instance of an image          |
+| Dockerfile    | Instructions to build an image        |
+| Docker Engine | Runs and manages containers           |
+| Docker Hub    | Online repository of Docker images    |
 
 
-
-
+Dockerfile:
 
 
 
