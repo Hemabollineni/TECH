@@ -1,4 +1,64 @@
 Docker
 
 What is docker?
-Docker is a
+Docker is a platform that packages an application and everything it needs (code, libraries, runtime, configuration) into a container
+so it runs the same way on any computer.
+
+
+Why Docker is Needed
+Docker provides:
+-Same environment everywhere
+-Easy application deployment
+-Isolation between applications
+-Fast startup
+-Lightweight compared to Virtual Machines
+
+Docker packages:Application, Runtime, Libraries, Dependencies, Configuration into a Docker Image.
+When that image runs, it becomes a Docker Container.
+
+Docker Architecture:
+               Docker Client
+          (docker run, docker build)
+                     │
+                     ▼
+             Docker Engine (Daemon)
+                     │
+      ┌──────────────┴──────────────┐
+      ▼                             ▼
+ Docker Images               Docker Containers
+
+1)Docker Client:
+  This is what you use.
+  Example: docker run nginx or docker build
+  The client sends commands to Docker Engine.
+
+2. Docker Engine (Daemon)
+This is the brain of Docker.
+It:
+-Builds images
+-Creates containers
+-Starts containers
+-Stops containers
+-Deletes containers
+-Downloads images
+
+3. Docker Image
+An Image is a read-only blueprint.
+It contains : Application, Libraries, Runtime, Configuration
+
+Example: Python, Flask, requirements.txt, app.py
+  Together these become one image.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
