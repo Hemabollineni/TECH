@@ -167,5 +167,41 @@ Dockerfile → Specifies how to build an image.
 Image → A template used to create a container.
 Volume → Used to store container data persistently.
 
+Docker Hub:-
+Docker Hub is an online registry where Docker images are stored, shared, and downloaded.
+Dockerfile
+    │
+    │ docker build
+    ▼
+Docker Image
+    │
+    ├──────────────► Push to Docker Hub
+    │                     │
+    │                     ▼
+    │              Other people can pull it
+    │
+    ▼
+docker run
+    │
+    ▼
+Docker Container
+
+Docker Hub is an online place where Docker images are stored and from where you can pull images to your computer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
