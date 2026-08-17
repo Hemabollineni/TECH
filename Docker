@@ -5,7 +5,7 @@ Docker is a platform that packages an application and everything it needs (code,
 so it runs the same way on any computer.
 
 
-Why Docker is Needed
+Why Docker is Needed?
 Docker provides:
 -Same environment everywhere
 -Easy application deployment
@@ -27,10 +27,12 @@ Docker Architecture:
       ▼                             ▼
  Docker Images               Docker Containers
 
-1)Docker Client:
+1)Docker Client: 
   This is what you use.
   Example: docker run nginx or docker build
   The client sends commands to Docker Engine.
+                  (or)
+  The Docker Client is the tool you use to send commands to Docker.
 
 2. Docker Engine (Daemon)
 This is the brain of Docker.
@@ -103,10 +105,67 @@ Everything starts automatically.
 
 
 Dockerfile:
+A Dockerfile is a text file containing instructions to build a Docker image.
+          Dockerfile
+              ↓
+        docker build
+              ↓
+        Docker Image
+              ↓
+        docker run
+              ↓
+      Docker Container
+Example:1
+FROM python:3.12  మన image కి base image ఎంచుకుంటుంది.అంటే Python ని మనం manually install చేయడం లేదు. ఇప్పటికే Python ఉన్న official image ని base గా ఉపయోగిస్తున్నాం.
+
+WORKDIR /app  Container లో working directory ని /app గా set చేస్తుంది. దాని తర్వాత commands/files సాధారణంగా ఈ directory context లో పని చేస్తాయి.
+
+COPY . .  it copies the current files in the docker image.   
+
+RUN pip install -r requirements.txt  dependencies install
+
+CMD ["python", "app.py"]  Container start అయినప్పుడు run కావాల్సిన default command.
+
+Example 2:
+FROM node:22
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["node", "server.js"]
 
 
 
+Docker Volumes:
+A Docker Volume is persistent storage managed by Docker outside the container.
+Even if the container is deleted, the data remains unless the volume is deleted separately.
 
+How does volume Works?
+docker volume create postgres-data   - it creates a volume
+PostgreSQL తన data ని ఆ location లో store చేస్తుంది, కానీ Docker volume ద్వారా అది persistent గా ఉంటుంది.
+
+Without volume:                                              With volume:
+PostgreSQL Container                                         PostgreSQL Container
+└── Employee Database                                                   │
+                                                                        ▼
+  Container delete:                                          postgres-data Volume
+Container ❌                                                          │
+Database Data ❌                                                      └── Employee Database
+                                                            Container delete:
+                                                            Container ❌
+                                                            postgres-data Volume ✅
+                                                            Employee Data ✅
+
+| Dockerfile                          | Docker Volume                          |
+| --------------------------------    | -------------------------------------- |
+| Image ఎలా build చేయాలో చెబుతుంది | Data persist చేయడానికి ఉపయోగపడుతుంది   |
+| Image creation కి సంబంధించినది     | Container data storage కి సంబంధించినది |
+| Instructions file                   | Persistent storage                     |
+| `docker build` తో ఉపయోగిస్తాం       | `docker run -v` తో ఉపయోగిస్తాం         |
+
+
+Dockerfile → Specifies how to build an image.
+Image → A template used to create a container.
+Volume → Used to store container data persistently.
 
 
 
