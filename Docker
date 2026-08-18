@@ -52,13 +52,20 @@ A Docker image is the template used to create containers.
 Example: Python, Flask, requirements.txt, app.py
   Together these become one image.
 
-4.Docker Container:
+4.Docker Container: A container is a running, isolated environment created from a Docker image.
 A Container is a running instance of an image.
   Example: Employee API Container
     Running.
   Another: Employee API Container
     Running.
     Both came from the same image.
+What does a container contains?
+    Container
+      ├── Your running application/process
+      ├── Filesystem based on the image
+      ├── Its own writable layer
+      ├── Network configuration
+      └── Environment configuration
 
 | Command                       | Creates Container | Starts Container            |
 | ----------------------------- | ----------------- | --------------------------- |
@@ -139,6 +146,9 @@ Docker Volumes:
 A Docker Volume is persistent storage managed by Docker outside the container.
 Even if the container is deleted, the data remains unless the volume is deleted separately.
 
+    Persistent storage means:
+    Data remains saved even after the application/container is stopped, restarted, or deleted.
+
 How does volume Works?
 docker volume create postgres-data   - it creates a volume
 PostgreSQL తన data ని ఆ location లో store చేస్తుంది, కానీ Docker volume ద్వారా అది persistent గా ఉంటుంది.
@@ -162,10 +172,14 @@ Database Data ❌                                                      └──
 | Instructions file                   | Persistent storage                     |
 | `docker build` తో ఉపయోగిస్తాం       | `docker run -v` తో ఉపయోగిస్తాం         |
 
-
 Dockerfile → Specifies how to build an image.
 Image → A template used to create a container.
 Volume → Used to store container data persistently.
+
+Don't think "everything inside a container is stored in the writable layer." That's wrong.
+    Original files from the image → image's read-only layers
+    New or modified data created by the container → container's writable layer, unless stored in a mounted volume or bind mount
+
 
 Docker Hub:-
 Docker Hub is an online registry where Docker images are stored, shared, and downloaded.
@@ -188,10 +202,158 @@ Docker Container
 
 Docker Hub is an online place where Docker images are stored and from where you can pull images to your computer.
 
+Docker Network:-
+A Docker network allows Docker containers to communicate with each other.
+
+Example 1: Create a network
+    docker network create employee-network
+
+Now run PostgreSQL:
+docker run -d \
+  --name postgres-db \
+  --network employee-network \
+  postgres
+
+Run your API:
+docker run -d \
+  --name employee-api \
+  --network employee-network \
+  employee-api-image
+
+Now:
+employee-network
+│
+├── employee-api
+└── postgres-db
+
+The API can communicate with PostgreSQL using its container name:
+
+postgres-db:5432
+
+
+Port Mapping:-
+Port mapping allows something outside a Docker container to access a service running inside the container.
+
+The format is:
+-p HOST_PORT:CONTAINER_PORT
+
+
+| Docker Network                      | Port Mapping                               |
+| ----------------------------------- | ------------------------------------------ |
+| Connects containers                 | Connects host/outside world to a container |
+| Container → Container communication | Host → Container communication             |
+| Example: API → PostgreSQL           | Example: Browser → API                     |
+| Uses internal Docker networking     | Uses published host ports                  |
+
+
+Your Employee API + PostgreSQL setup:
+-------------------------------------
+                 YOUR LAPTOP
+
+Browser / Postman
+       │
+       │ localhost:8000
+       ▼
+Host Port 8000
+       │
+       │ Port Mapping
+       ▼
+┌──────────────────────────────────┐
+│          Docker Network          │
+│                                  │
+│   API Container                  │
+│   Port: 8000                     │
+│        │                         │
+│        │ Internal connection     │
+│        │ postgres-db:5432        │
+│        ▼                         │
+│   PostgreSQL Container           │
+│   Port: 5432                     │
+│                                  │
+└──────────────────────────────────┘
+
+Docker Network = lets containers find and communicate with each other.
+Port Mapping = exposes a container's port to your laptop or outside Docker.
+
+
+Dockerfile → Docker Engine → Image → Container → Text File → Volume :- this like flow of a docker
 
 
 
+Docker Commands:-
+-----------------
+1. Docker Version & Info
+docker --version
+docker version
+docker info
 
+2. Images
+List images: docker images
+
+Search an image: docker search nginx
+
+Pull an image: docker pull nginx
+
+Build an image: docker build -t myapp .
+
+Remove an image: docker rmi image_name
+
+Remove unused images: docker image prune
+
+
+3. Containers
+Run a container: docker run nginx
+
+Run in detached mode: docker run -d nginx
+
+Run with a name: docker run --name webserver nginx
+
+Run with port mapping: docker run -d -p 8080:80 nginx
+
+Run interactively: docker run -it ubuntu bash
+
+List running containers: docker ps
+
+List all containers: docker ps -a
+
+Stop a container: docker stop container_name
+
+Start a container: docker start container_name
+
+Restart a container: docker restart container_name
+
+Pause/Unpause: docker pause container_name
+               docker unpause container_name
+
+Remove a container: docker rm container_name
+
+Force remove: docker rm -f container_name
+
+
+4. Execute Commands Inside a Container
+Open a shell: docker exec -it container_name bash
+
+If Bash isn't available: docker exec -it container_name sh
+
+Run a single command: docker exec container_name ls /app
+
+
+5. Logs
+View logs: docker logs container_name
+
+Follow logs: docker logs -f container_name
+
+Last 100 lines: docker logs --tail 100 container_name
+
+
+6. Volumes
+List volumes: docker volume ls
+
+Create a volume: docker volume create myvolume
+
+Inspect a volume: docker volume inspect myvolume
+
+Remove a volume: docker volume rm myvolume
 
 
 
