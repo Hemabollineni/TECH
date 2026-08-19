@@ -182,6 +182,7 @@ Don't think "everything inside a container is stored in the writable layer." Tha
 
 
 Docker Hub:-
+---------------
 Docker Hub is an online registry where Docker images are stored, shared, and downloaded.
 Dockerfile
     │
@@ -202,7 +203,9 @@ Docker Container
 
 Docker Hub is an online place where Docker images are stored and from where you can pull images to your computer.
 
+
 Docker Network:-
+------------------------
 A Docker network allows Docker containers to communicate with each other.
 
 Example 1: Create a network
@@ -232,6 +235,7 @@ postgres-db:5432
 
 
 Port Mapping:-
+------------------
 Port mapping allows something outside a Docker container to access a service running inside the container.
 
 The format is:
@@ -276,7 +280,65 @@ Docker Network = lets containers find and communicate with each other.
 Port Mapping = exposes a container's port to your laptop or outside Docker.
 
 
+Docker Compose:-
+-----------------
+Docker Compose is a tool for defining and running multiple Docker containers together using one configuration file.
+
+"Docker Compose makes it easy to set up and manage multiple containers, including their communication, networks, 
+volumes, ports, and configuration, without manually running many Docker commands."
+
+Without Docker Compose
+
+API + PostgreSQL కోసం manually:
+
+1. Build API image
+2. Create network
+3. Create volume
+4. Run PostgreSQL container
+5. Connect PostgreSQL to network
+6. Run API container
+7. Connect API to network
+8. Configure ports
+
+With Docker Compose
+
+నువ్వు ఇవన్నీ compose.yaml లో define చేస్తావు:
+
+compose.yaml
+│
+├── API service
+├── PostgreSQL service
+├── Network settings
+├── Volume settings
+└── Port mapping
+  docker compose up 
+    Compose అవసరమైన setup ని Docker Engine ద్వారా చేస్తుంది:
+docker compose up
+        │
+        ▼
+Docker Engine
+        │
+        ├── Creates network
+        ├── Creates volume
+        ├── Builds/pulls images
+        ├── Creates containers
+        ├── Starts containers
+        └── Connects services to the network
+
 Dockerfile → Docker Engine → Image → Container → Text File → Volume :- this like flow of a docker
+
+| Concept            | What it does                                              |
+| ------------------ | --------------------------------------------------------- |
+| **Text files**     | Your code and configuration files                         |
+| **Dockerfile**     | Instructions for building an image                        |
+| **Docker Engine**  | Builds images and manages Docker resources                |
+| **Image**          | Packaged template used to create containers               |
+| **Container**      | Running instance where the application executes           |
+| **Writable layer** | Stores container-specific filesystem changes              |
+| **Volume**         | Persistent storage independent of the container lifecycle |
+| **Network**        | Allows containers to communicate                          |
+| **Port mapping**   | Allows your laptop/outside world to reach a container     |
+| **Docker Compose** | Defines and manages multiple containers/services together |
 
 
 
@@ -356,6 +418,14 @@ Inspect a volume: docker volume inspect myvolume
 Remove a volume: docker volume rm myvolume
 
 
+Networks
+List networks: docker network ls
+
+Create a network: docker network create mynetwork
+
+Connect a container: docker network connect mynetwork container_name
+
+Remove a network: docker network rm mynetwork
 
 
 
