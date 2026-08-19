@@ -392,7 +392,7 @@ Remove a container: docker rm container_name
 Force remove: docker rm -f container_name
 
 
-4. Execute Commands Inside a Container
+4. Execute Commands Inside a Container [docker exec] 
 Open a shell: docker exec -it container_name bash
 
 If Bash isn't available: docker exec -it container_name sh
@@ -418,7 +418,7 @@ Inspect a volume: docker volume inspect myvolume
 Remove a volume: docker volume rm myvolume
 
 
-Networks
+7. Networks
 List networks: docker network ls
 
 Create a network: docker network create mynetwork
@@ -428,7 +428,89 @@ Connect a container: docker network connect mynetwork container_name
 Remove a network: docker network rm mynetwork
 
 
+8. Docker Compose
+Start services: docker compose up
 
+Start in background: docker compose up -d
+
+Stop services: docker compose down
+
+View logs: docker compose logs
+
+Restart: docker compose restart
+
+Rebuild and start: docker compose up --build
+
+
+9. Inspect & Statistics
+Inspect a container: docker inspect container_name
+
+View resource usage: docker stats
+
+View processes: docker top container_name
+
+
+10. Copy Files
+Host → Container: docker cp file.txt container_name:/tmp/
+
+Container → Host: docker cp container_name:/tmp/file.txt .
+
+
+11. Clean Up
+
+Remove stopped containers: docker container prune
+
+Remove unused volumes: docker volume prune
+
+Remove unused networks: docker network prune
+
+Remove everything unused: docker system prune
+
+Remove everything including unused images: docker system prune -a
+
+"""""here, PRUNE automatically clean up resources Docker considers unused.""""
+
+
+How to login inside a running container using Docker exec command?
+-------------------------------------------------------------------
+first check what are images you have 
+by, docker images 
+""""""""nginx:latest      8541484afbc9        241MB           66MB    U
+        postgres:latest   06cad38a5d9f        650MB          168MB
+        ubuntu:latest     678c6550cc43        160MB         45.3MB        """""""""
+
+then generate a container from the image:
+by, docker run -it --name ubuntu bash
+then you get, docker bash-5.3#
+here by cilcking exit you will exit form the container.
+
+To check what are the containers you had?
+by, docker ps -a      
+then i got
+""""""""CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS                      PORTS     NAMES
+        27fd9d3a1449   bash           "docker-entrypoint.s…"   55 seconds ago   Exited (0) 12 seconds ago             ubuntu
+        eb4bfbd6f97a   nginx:latest   "/docker-entrypoint.…"   25 hours ago     Exited (0) 25 hours ago               nifty_easley
+        a895b78083d5   nginx:latest   "/docker-entrypoint.…"   4 days ago       Exited (255) 45 hours ago   80/tcp    ecstatic_haslett   """"""
+
+docker exec -it my-ubuntu bash
+This command will get you inside the container 
+
+with out using the exit command you can press crtl+p and then crtl+q. 
+it will Detach from the container without stopping it
+
+Practice commands inside the container
+
+After docker exec, run: pwd, whoami, ls and exit
+
+""""root@9965ddfd68b4:/# pwd
+    /
+    root@9965ddfd68b4:/# whoami
+    root
+    root@9965ddfd68b4:/# ls
+    bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+    root@9965ddfd68b4:/# exit
+    exit """""
+this is inside the cmd.
 
 
 
