@@ -1,7 +1,7 @@
 Docker
 
 What is docker?
-Docker is a platform that packages an application and everything it needs (code, libraries, runtime, configuration) into a container
+Docker is a platform that packages an application and everything it needs (code, libraries, runtime, fwwfconfiguration) into a container
 so it runs the same way on any computer.
 
 
