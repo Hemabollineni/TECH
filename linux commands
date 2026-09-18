@@ -1,0 +1,132 @@
+# Navigation
+pwd
+ls
+cd
+mkdir
+touch
+cp
+mv
+rm
+file
+stat
+
+# Files
+cat
+less
+head
+tail
+find
+grep
+awk
+sed
+cut
+sort
+uniq
+wc
+xargs
+tee
+
+# Permissions
+chmod
+chown
+chgrp
+umask
+
+# Users
+id
+whoami
+who
+w
+groups
+passwd
+useradd
+usermod
+
+# Processes
+ps
+top
+htop
+pgrep
+pidof
+kill
+killall
+nice
+renice
+
+# Services
+systemctl
+service
+journalctl
+
+# Networking
+ip
+ping
+ss
+ip neigh
+ip route
+traceroute
+tracepath
+nc
+curl
+wget
+
+# DNS
+dig
+nslookup
+host
+resolvectl
+
+# SSH
+ssh
+scp
+sftp
+ssh-keygen
+
+# Packet analysis
+tcpdump
+
+# Security/TLS
+openssl
+iptables
+nft
+firewall-cmd
+ufw
+
+# System
+uname
+hostname
+hostnamectl
+uptime
+free
+df
+du
+vmstat
+iostat
+lsblk
+lscpu
+
+# Packages
+apt
+dpkg
+dnf
+rpm
+
+# Archives
+tar
+gzip
+zip
+unzip
+
+# Shell
+bash
+echo
+export
+env
+printenv
+$?
+$1
+$@
+if
+for
+while
+case
