@@ -280,3 +280,18 @@ if __name__ == "__main__":
         port=5000,
         debug=True
     )
+
+
+python3 rest_server.py
+
+when test in vm1 for sample
+(myenv) root@ubuntu-vm1:~# curl http://127.0.0.1:5000/students
+[
+  {
+    "age": 23,
+    "course": "Java",
+    "email": "ravi@example.com",
+    "name": "Ravi",
+    "student_id": 2
+  } i got all other student details also 
+ 
