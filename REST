@@ -519,17 +519,420 @@ my next task is like as i am using get all students and get one in differnt func
 NOW, in should use the same function foor that,
 
 
+saved this file as rest1_server.py
+-------------------------------------------------------------------------------------------------------------------
+from flask import Flask, request, jsonify 
+import psycopg2 
+ 
+app = Flask(__name__) 
+ 
+ 
+def get_db_connection(): 
+    connection = psycopg2.connect( 
+        host="localhost", 
+        port=5432, 
+        database="school_db", 
+        user="postgres", 
+        password="root123" 
+    ) 
+ 
+    return connection 
+ 
+ 
+@app.route("/", methods=["GET"]) 
+def home(): 
+    return jsonify({ 
+        "message": "Student REST API is running" 
+    }) 
+ 
+ 
+ 
+@app.route("/students", methods=["GET"]) 
+def get_students(): 
+   try: 
+     connection = get_db_connection() 
+     cursor = connection.cursor() 
+     cursor.execute(""" 
+         SELECT student_id, name, age, course, email 
+         FROM students 
+         ORDER BY student_id 
+     """) 
+ 
+     rows = cursor.fetchall() 
+ 
+     students = [] 
+ 
+     for row in rows: 
+         student = { 
+                 "student_id": row[0], 
+                 "name": row[1], 
+                 "age": row[2], 
+                 "course": row[3], 
+                 "email": row[4] 
+                 } 
+         students.append(student) 
+     cursor.close() 
+     connection.close() 
+     return jsonify(students), 200 
+   except Exception as e: 
+      return jsonify({ 
+         "error": str(e) 
+        }), 500 
+ 
+ 
+@app.route("/students/<int:student_id>", methods=["GET"]) 
+def get_student(student_id): 
+ 
+    try: 
+        connection = get_db_connection() 
+        cursor = connection.cursor() 
+ 
+        cursor.execute(""" 
+            SELECT student_id, name, age, course, email 
+            FROM students 
+            WHERE student_id = %s 
+        """, (student_id,)) 
+ 
+        row = cursor.fetchone() 
+ 
+        cursor.close() 
+        connection.close() 
+ 
+        if row is None: 
+            return jsonify({ 
+                "message": "Student not found" 
+            }), 404 
+ 
+        student = { 
+            "student_id": row[0], 
+            "name": row[1], 
+            "age": row[2], 
+            "course": row[3], 
+            "email": row[4] 
+        } 
+ 
+        return jsonify(student), 200 
+ 
+    except Exception as e: 
+        return jsonify({ 
+            "error": str(e) 
+        }), 500 
+ 
+ 
+@app.route("/students", methods=["POST"]) 
+def add_student(): 
+ 
+    try: 
+        data = request.get_json() 
+ 
+        name = data.get("name") 
+        age = data.get("age") 
+        course = data.get("course") 
+        email = data.get("email") 
+ 
+        if not name or not age or not course or not email: 
+            return jsonify({ 
+                "message": "All fields are required" 
+            }), 400 
+ 
+        connection = get_db_connection() 
+        cursor = connection.cursor() 
+ 
+        cursor.execute(""" 
+            INSERT INTO students 
+            (name, age, course, email) 
+            VALUES (%s, %s, %s, %s) 
+            RETURNING student_id 
+        """, (name, age, course, email)) 
+ 
+        student_id = cursor.fetchone()[0] 
+ 
+        connection.commit() 
+ 
+        cursor.close() 
+        connection.close() 
+ 
+        return jsonify({ 
+            "message": "Student added successfully", 
+            "id": student_id 
+        }), 201 
+ 
+    except Exception as e: 
+        return jsonify({ 
+            "error": str(e) 
+        }), 500 
+ 
+ 
+@app.route("/students/<int:student_id>", methods=["PUT"]) 
+def update_student(student_id): 
+ 
+    try: 
+        data = request.get_json() 
+ 
+        name = data.get("name") 
+        age = data.get("age") 
+        course = data.get("course") 
+        email = data.get("email") 
+ 
+        if not name or not age or not course or not email: 
+            return jsonify({ 
+                "message": "All fields are required" 
+            }), 400 
+ 
+        connection = get_db_connection() 
+        cursor = connection.cursor() 
+ 
+        cursor.execute(""" 
+            UPDATE students 
+            SET name = %s, 
+                age = %s, 
+                course = %s, 
+                email = %s 
+            WHERE student_id = %s 
+        """, (name, age, course, email, student_id)) 
+ 
+        if cursor.rowcount == 0: 
+            connection.rollback() 
+ 
+            cursor.close() 
+            connection.close() 
+ 
+            return jsonify({ 
+                "message": "Student not found" 
+            }), 404 
+ 
+        connection.commit() 
+ 
+        cursor.close() 
+        connection.close() 
+ 
+        return jsonify({ 
+            "message": "Student updated successfully" 
+        }), 200 
+ 
+    except Exception as e: 
+        return jsonify({ 
+            "error": str(e) 
+        }), 500 
+ 
+ 
+@app.route("/students/<int:student_id>", methods=["DELETE"]) 
+def delete_student(student_id): 
+ 
+    try: 
+        connection = get_db_connection() 
+        cursor = connection.cursor() 
+ 
+        cursor.execute(""" 
+            DELETE FROM students 
+            WHERE student_id = %s 
+        """, (student_id,)) 
+ 
+        if cursor.rowcount == 0: 
+            connection.rollback() 
+ 
+            cursor.close() 
+            connection.close() 
+ 
+            return jsonify({ 
+                "message": "Student not found" 
+            }), 404 
+ 
+        connection.commit() 
+ 
+        cursor.close() 
+        connection.close() 
+ 
+        return jsonify({ 
+            "message": "Student deleted successfully" 
+        }), 200 
+ 
+    except Exception as e: 
+        return jsonify({ 
+            "error": str(e) 
+        }), 500 
+ 
+ 
+if __name__ == "__main__": 
+    app.run( 
+        host="0.0.0.0", 
+        port=5000, 
+        debug=True 
+    ) 
+above mention code is server side code 
 
+now this file us saved as rest_client1.py 
+import requests
+BASE_URL = "http://172.20.0.10:5000" 
+ 
+# --------------------------------------------------- 
+# GET STUDENTS 
+# 
+# get_students()       -> Get ALL 
+# get_students(1)      -> Get ONE 
+# --------------------------------------------------- 
+ 
+def get_students(student_id=None): 
+ 
+    try:  
+        # ------------------------------------------- 
+        # GET ONE STUDENT 
+        # ------------------------------------------- 
+ 
+        if student_id is not None: 
+ 
+            response = requests.get( 
+                f"{BASE_URL}/students/{student_id}" 
+            ) 
+        # ------------------------------------------- 
+        # GET ALL STUDENTS 
+        # ------------------------------------------- 
+ 
+        else: 
+            response = requests.get( 
+                f"{BASE_URL}/students" 
+            ) 
+ 
+        print("\nStatus:", response.status_code) 
+        print("Response:") 
+        print(response.json()) 
+ 
+    except requests.exceptions.RequestException as e:  
+        print("Connection error:", e) 
+ 
+ 
+# --------------------------------------------------- 
+# POST - ADD STUDENT 
+# --------------------------------------------------- 
+ 
+def add_student():  
+    print("\nEnter student details") 
+ 
+    name = input("Enter name: ") 
+    age = int(input("Enter age: ")) 
+    course = input("Enter course: ") 
+    email = input("Enter email: ") 
+ 
+    data = { 
+        "name": name, 
+        "age": age, 
+        "course": course, 
+        "email": email 
+    } 
+    try: 
+        response = requests.post( 
+            f"{BASE_URL}/students", 
+            json=data 
+        )  
+        print("\nStatus:", response.status_code) 
+        print("Response:") 
+        print(response.json()) 
 
+    except requests.exceptions.RequestException as e:  
+        print("Connection error:", e) 
 
-
-
-
-
-
-
-
-
+# --------------------------------------------------- 
+# PUT - UPDATE STUDENT 
+# --------------------------------------------------- 
+ 
+def update_student(student_id): 
+    print("\nEnter new student details")  
+    name = input("Enter new name: ") 
+    age = int(input("Enter new age: ")) 
+    course = input("Enter new course: ") 
+    email = input("Enter new email: ") 
+ 
+    data = { 
+        "name": name, 
+        "age": age, 
+        "course": course, 
+        "email": email 
+    } 
+ 
+    try: 
+        response = requests.put( 
+            f"{BASE_URL}/students/{student_id}", 
+            json=data 
+        )  
+        print("\nStatus:", response.status_code) 
+        print("Response:") 
+        print(response.json()) 
+ 
+    except requests.exceptions.RequestException as e: 
+ 
+        print("Connection error:", e) 
+# --------------------------------------------------- 
+# DELETE STUDENT 
+# --------------------------------------------------- 
+ 
+def delete_student(student_id):  
+    try:  
+        response = requests.delete( 
+            f"{BASE_URL}/students/{student_id}" 
+        )  
+        print("\nStatus:", response.status_code) 
+        print("Response:") 
+        print(response.json())  
+    except requests.exceptions.RequestException as e:  
+        print("Connection error:", e) 
+ 
+ 
+# --------------------------------------------------- 
+# MENU 
+# --------------------------------------------------- 
+ 
+while True:  
+    print("\n==============================") 
+    print("       STUDENT REST CLIENT") 
+    print("==============================") 
+ 
+    print("1. Get all students") 
+    print("2. Get one student") 
+    print("3. Add student") 
+    print("4. Update student") 
+    print("5. Delete student") 
+    print("6. Exit") 
+ 
+    print("==============================") 
+ 
+    choice = input("Enter your choice: ") 
+ 
+    # GET ALL 
+    if choice == "1": 
+        get_students() 
+ 
+    # GET ONE 
+    elif choice == "2":  
+        student_id = int( 
+            input("Enter student ID: ") 
+        ) 
+        get_students(student_id) 
+ 
+    # POST 
+    elif choice == "3":  
+        add_student() 
+  
+    # PUT 
+    elif choice == "4":  
+        student_id = int( 
+            input("Enter student ID: ") 
+        )  
+        update_student(student_id)  
+ 
+    # DELETE 
+    elif choice == "5": 
+        student_id = int( 
+            input("Enter student ID: ") 
+        )  
+        delete_student(student_id) 
+ 
+    # EXIT 
+    elif choice == "6":  
+        print("Exiting...") 
+        break  
+    else:  
+        print("Invalid choice") 
+and above is the client side code.
 
 
 
