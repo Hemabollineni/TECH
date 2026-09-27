@@ -294,4 +294,242 @@ when test in vm1 for sample
     "name": "Ravi",
     "student_id": 2
   } i got all other student details also 
+by giving single id
+(myenv) root@ubuntu-vm1:~# curl http://127.0.0.1:5000/students/8
+{
+  "age": 24,
+  "course": "anime",
+  "email": "max@gamil.com",
+  "name": "max",
+  "student_id": 8
+}
+
  
+now we need it form the vm2 
+ curl http://172.20.0.10:5000/students
+[
+  {
+    "age": 23,
+    "course": "Java",
+    "email": "ravi@example.com",
+    "name": "Ravi",
+    "student_id": 2
+  },
+from vm2 also you got the same.
+
+
+POST — Add a student from VM2:
+-----------------------------------
+From VM2:
+root@ubuntu-vm2:~# curl -X POST http://172.20.0.10:5000/students -H "Content-Type: application/json" -d '{"name":"John","age":24,"course":"Python","email":"john@gmail.com"}'
+{
+  "id": 11,
+  "message": "Student added successfully"
+}
+
+
+PUT — Update student:
+----------------------
+root@ubuntu-vm2:~# curl -X PUT http://172.20.0.10:5000/students/4 \
+-H "Content-Type: application/json" \
+-d '{"name":"John","age":24,"course":"Django","email":"john@gmail.com"}'
+{
+  "message": "Student updated successfully"
+}
+
+
+DELETE — Delete student
+-----------------------
+root@ubuntu-vm2:~# curl -X DELETE http://172.20.0.10:5000/students/4
+{
+  "message": "Student deleted successfully"
+}
+
+
+
+Python REST client on VM2:
+-----------------------------
+pip install requests -- got error 
+so,
+source myenv/bin/activate
+then:, python3 -m pip install requests
+
+(myenv) root@ubuntu-vm2:~# vim rest1_client.py
+the code i put in .py file :
+------------------------------------------------------------------------------------------------------------------------------------
+import requests
+BASE_URL = "http://172.20.0.10:5000"
+
+def get_students():
+    response = requests.get(
+        f"{BASE_URL}/students"
+    )
+    print("\nStatus:", response.status_code)
+    print("Response:", response.json())
+
+def get_student(student_id):
+    response = requests.get(
+        f"{BASE_URL}/students/{student_id}"
+    )
+    print("\nStatus:", response.status_code)
+    print("Response:", response.json())
+
+
+def add_student():
+    print("\nEnter student details")
+    name = input("Enter name: ")
+    age = int(input("Enter age: "))
+    course = input("Enter course: ")
+    email = input("Enter email: ")
+    data = {
+        "name": name,
+        "age": age,
+        "course": course,
+        "email": email
+    }
+    response = requests.post(
+        f"{BASE_URL}/students",
+        json=data
+    )
+    print("\nStatus:", response.status_code)
+    print("Response:", response.json())
+
+def update_student(student_id):
+    print("\nEnter new student details")
+    name = input("Enter new name: ")
+    age = int(input("Enter new age: "))
+    course = input("Enter new course: ")
+    email = input("Enter new email: ")
+    data = {
+        "name": name,
+        "age": age,
+        "course": course,
+        "email": email
+    }
+    response = requests.put(
+        f"{BASE_URL}/students/{student_id}",
+        json=data
+    )
+    print("\nStatus:", response.status_code)
+    print("Response:", response.json())
+
+def delete_student(student_id):
+    response = requests.delete(
+        f"{BASE_URL}/students/{student_id}"
+    )
+    print("\nStatus:", response.status_code)
+    print("Response:", response.json())
+
+while True:
+    print("\n=============================")
+    print("       STUDENT REST CLIENT")
+    print("=============================")
+
+    print("1. Get all students")
+    print("2. Get one student")
+    print("3. Add student")
+    print("4. Update student")
+    print("5. Delete student")
+    print("6. Exit")
+
+    print("=============================")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        get_students()
+
+    elif choice == "2":
+        student_id = int(
+            input("Enter student ID: ")
+        )
+        get_student(student_id)
+
+    elif choice == "3":
+        add_student()
+
+    elif choice == "4":
+        student_id = int(
+            input("Enter student ID: ")
+        )
+        update_student(student_id)
+
+    elif choice == "5":
+        student_id = int(
+            input("Enter student ID: ")
+        )
+        delete_student(student_id)
+
+    elif choice == "6":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice")
+
+the run code 
+
+(myenv) root@ubuntu-vm2:~# python3 rest1_client.py
+
+=============================
+       STUDENT REST CLIENT
+=============================
+1. Get all students
+2. Get one student
+3. Add student
+4. Update student
+5. Delete student
+6. Exit
+=============================
+Enter your choice: 2
+Enter student ID: 6
+
+Status: 200
+Response: {'age': 23, 'course': 'db', 'email': 'usha@gamil.com', 'name': 'usha', 'student_id': 6}
+
+=============================
+       STUDENT REST CLIENT
+=============================
+1. Get all students
+2. Get one student
+3. Add student
+4. Update student
+5. Delete student
+6. Exit
+=============================
+Enter your choice: 5
+Enter student ID: 6
+
+Status: 200
+Response: {'message': 'Student deleted successfully'}
+
+=============================
+       STUDENT REST CLIENT
+=============================
+1. Get all students
+2. Get one student
+3. Add student
+4. Update student
+5. Delete student
+6. Exit
+=============================
+Enter your choice:
+
+
+my next task is like as i am using get all students and get one in differnt functions 
+NOW, in should use the same function foor that,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
