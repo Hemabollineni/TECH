@@ -345,7 +345,7 @@ root@ubuntu-vm2:~# curl -X DELETE http://172.20.0.10:5000/students/4
   "message": "Student deleted successfully"
 }
 
-
+--------------------------------------------------------------------------------------------------------------------------------------
 
 Python REST client on VM2:
 -----------------------------
@@ -356,7 +356,9 @@ then:, python3 -m pip install requests
 
 (myenv) root@ubuntu-vm2:~# vim rest1_client.py
 the code i put in .py file :
-------------------------------------------------------------------------------------------------------------------------------------
+=================================================================================================================
+
+=================================================================================================================
 import requests
 BASE_URL = "http://172.20.0.10:5000"
 
@@ -933,6 +935,191 @@ while True:
     else:  
         print("Invalid choice") 
 and above is the client side code.
+
+
+=============================================================================================================================
+You can keep your existing GET, POST and DELETE code.
+vim rest2_server.py Here, the use case is get update the particular detail i need.
+=========================================================================================
+
+@app.route("/students/<int:student_id>", methods=["PATCH"])
+def update_student(student_id):
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                "message": "No data provided"
+            }), 400
+
+        allowed_fields = [
+            "name",
+            "age",
+            "course",
+            "email"
+        ]
+
+        for field in data:
+            if field not in allowed_fields:
+
+                return jsonify({
+                    "message": f"Invalid field: {field}"
+                }), 400
+
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "SELECT student_id FROM students WHERE student_id = %s",
+            (student_id,)
+        )
+
+        student = cursor.fetchone()
+        if student is None:
+
+            cursor.close()
+            connection.close()
+
+            return jsonify({
+                "message": "Student not found"
+            }), 404
+
+        for field, value in data.items():
+
+            if field == "name":
+
+                cursor.execute("""
+                    UPDATE students
+                    SET name = %s
+                    WHERE student_id = %s
+                """, (value, student_id))
+
+            elif field == "age":
+
+                cursor.execute("""
+                    UPDATE students
+                    SET age = %s
+                    WHERE student_id = %s
+                """, (value, student_id))
+
+            elif field == "course":
+
+                cursor.execute("""
+                    UPDATE students
+                    SET course = %s
+                    WHERE student_id = %s
+                """, (value, student_id))
+
+            elif field == "email":
+
+                cursor.execute("""
+                    UPDATE students
+                    SET email = %s
+                    WHERE student_id = %s
+                """, (value, student_id))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({
+            "message": "Student updated successfully",
+            "student_id": student_id,
+            "updated_fields": list(data.keys())
+        }), 200
+
+    except Exception as e:
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+
+
+=================================================================================================================================
+now the client side changes
+===================================================================================================================================
+def update_student(student_id):
+        print("\nWhat do you want to update?")
+
+        print("1. Name")
+        print("2. Age")
+        print("3. Course")
+        print("4. Email")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+                name = input("Enter new name: ")
+                data = { "name": name }
+
+        elif choice == "2":
+                age = int(input("Enter new age: "))
+                data = { "age": age }
+
+        elif choice == "3":
+                course = input("Enter new course: ")
+                data = { "course": course }
+
+        elif choice == "4":
+                email = input("Enter new email: ")
+                data = { "email": email }
+        else:
+                print("Invalid choice")
+                return
+
+        try:
+                response = requests.patch( f"{BASE_URL}/students/{student_id}", json=data )
+                print("\nStatus:", response.status_code)
+                print("Response:")
+                print(response.json())
+        except requests.exceptions.RequestException as e:
+                print("Connection error:", e)
+
+
+just an example:
+==============================
+       STUDENT REST CLIENT
+==============================
+1. Get all students
+2. Get one student
+3. Add student
+4. Update student
+5. Delete student
+6. Exit
+==============================
+Enter your choice: 4
+Enter student ID: 15
+
+What do you want to update?
+1. Name
+2. Age
+3. Course
+4. Email
+Enter your choice: 4
+Enter new email: lia@gmail.com
+
+Status: 200
+Response:
+{'message': 'Student updated successfully', 'student_id': 15, 'updated_fields': ['email']}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
