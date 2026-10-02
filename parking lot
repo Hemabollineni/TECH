@@ -1,0 +1,139 @@
+su - postgres
+psql
+CREATE DATABASE parkinglot;
+
+Next creating 3 tables 
+Table-1:
+CREATE TABLE parkingslots (
+    slot_id SERIAL PRIMARY KEY,
+    slot_number VARCHAR(10) UNIQUE NOT NULL,
+    vehicle_type VARCHAR(20) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'available'
+);
+
+and the data into the table:
+INSERT INTO parkingslots (slot_number, vehicle_type)
+VALUES
+('B1', '2-wheeler'),
+('B2', '2-wheeler'),
+('B3', '2-wheeler'),
+('B4', '2-wheeler'),
+('B5', '2-wheeler'),
+('C1', '4-wheeler'),
+('C2', '4-wheeler'),
+('C3', '4-wheeler'),
+('C4', '4-wheeler'),
+('C5', '4-wheeler');
+
+Table:2
+ CREATE TABLE entrydetails (
+    entry_id SERIAL PRIMARY KEY,
+    vehicle_number VARCHAR(20) UNIQUE NOT NULL,
+    vehicle_type VARCHAR(20) NOT NULL,
+    owner_name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    mobile VARCHAR(15) NOT NULL,
+    slot_number VARCHAR(10) NOT NULL,
+    entry_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+Table : 3
+CREATE TABLE exitdetails (
+    exit_id SERIAL PRIMARY KEY,
+    entry_id INT NOT NULL,
+    vehicle_number VARCHAR(20) NOT NULL,
+    slot_number VARCHAR(10) NOT NULL,
+    entry_time TIMESTAMP NOT NULL,
+    exit_time TIMESTAMP NOT NULL,
+    parking_hours INT NOT NULL,
+    rate_per_hour INT NOT NULL,
+    total_amount INT NOT NULL
+);
+
+
+-----------------------------------------------------------------------------
+checking manullay:
+
+First, check the empty slots
+Run:
+For a 2-wheeler:
+SELECT slot_number, vehicle_type, status
+FROM parkingslots
+WHERE vehicle_type = '2-wheeler'
+AND status = 'available';
+
+For a 4-wheeler:
+SELECT slot_number, vehicle_type, status
+FROM parkingslots
+WHERE vehicle_type = '4-wheeler'
+AND status = 'available';
+
+Assign the first available slot
+Let's test with a 2-wheeler:
+SELECT slot_number FROM parkingslots WHERE vehicle_type = '2-wheeler'
+  AND status = 'available' ORDER BY slot_id LIMIT 1;
+
+mark B1 as occupied:
+UPDATE parkingslots
+SET status = 'occupied'
+WHERE slot_number = 'B1';
+
+Insert the vehicle into entrydetails:
+INSERT INTO entrydetails
+(
+    vehicle_number,
+    vehicle_type,
+    owner_name,
+    age,
+    email,
+    mobile,
+    slot_number
+)
+VALUES
+(
+    'AP39AB1234',
+    '2-wheeler',
+    'Hema',
+    23,
+    'hema@gmail.com',
+    '9876543210',
+    'B1'
+);
+
+parkinglot=# SELECT * FROM parkingslots;
+ slot_id | slot_number | vehicle_type |  status
+---------+-------------+--------------+-----------
+       2 | B2          | 2-wheeler    | available
+       3 | B3          | 2-wheeler    | available
+       4 | B4          | 2-wheeler    | available
+       5 | B5          | 2-wheeler    | available
+       6 | C1          | 4-wheeler    | available
+       7 | C2          | 4-wheeler    | available
+       8 | C3          | 4-wheeler    | available
+       9 | C4          | 4-wheeler    | available
+      10 | C5          | 4-wheeler    | available
+       1 | B1          | 2-wheeler    | occupied
+(10 rows)
+
+SELECT * FROM entrydetails;
+ entry_id | vehicle_number | vehicle_type | owner_name | age |     email      |   mobile   | slot_number |        entry_time       
+----------+----------------+--------------+------------+-----+----------------+------------+-------------+--------------------------
+        1 | AP39AB1234     | 2-wheeler    | Hema       |  23 | hema@gmail.com | 9876543210 | B1          | 2026-10-01 11:24:13.3374
+(1 row)
+
+(END)
+
+
+First add active to entrydetails
+In PostgreSQL on VM1:
+ALTER TABLE entrydetails
+ADD COLUMN active BOOLEAN DEFAULT TRUE;
+
+Check: \d entrydetails
+Your existing Hema entry will automatically have:active = true
+
+we totally create 3 .py file 
+parking_db.py
+entry
+exit
