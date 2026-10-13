@@ -1,4 +1,2 @@
-request
-flask
-paramiki
+Flask
 psycopg2-binary
