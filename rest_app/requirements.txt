@@ -1,3 +1,4 @@
 request
 flask
-paramiko
+paramiki
+psycopg2-binary
