@@ -1,0 +1,7 @@
+@'
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+'@ | Set-Content D:\work\TECH-github\rest_app\.gitignore
