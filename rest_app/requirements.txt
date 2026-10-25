@@ -1,3 +1,2 @@
-request
-flask
-paramiko
+Flask
+psycopg2-binary
