@@ -1,0 +1,88 @@
+# Day-wise Coding Practice – Questions
+
+## Q1. Python Functions
+File: d1_functions.py
+
+Write a Python function called calculate_square():
+1. Accept one number as an argument.
+2. Calculate the square of that number.
+3. Return the result.
+4. Call the function with 5 and display the result.
+
+Expected Output: 25
+
+
+## Q2. Python OOP
+File: d2_oops.py
+
+Create a class called Employee:
+1. Attributes: name and salary.
+2. Create a method called display() to print both attributes.
+3. Create an employee object and call the method.
+
+
+## Q3. SQL – Database
+File: d3_sql.sql
+
+Assume an employees table with columns id, name, salary.
+
+Write queries to:
+1. Display all employees.
+2. Display employees whose salary is greater than 25000.
+
+
+
+## Q4. REST API – Flask
+File: d4_flask_api.py
+
+Create a Flask API:
+1. Endpoint: /welcome
+2. HTTP method: GET
+3. Return JSON response:
+   {"message": "Welcome to Flask API"}
+
+
+## Q5. Authentication – JWT
+File: d5_jwt.py
+
+Write Python code to:
+1. Generate a JWT token containing a username.
+2. Set token expiry to 5 minutes.
+3. Verify the token.
+4. Extract the username from the verified token.
+
+Use PyJWT.
+
+
+##Q6. Pytest – Testing 
+File: d6_pytest.py
+
+Given: Write a function called calculate() that accepts two numbers and an operation.
+def calculate(a, b, operation):
+    if operation == "add":
+        return a + b
+    elif operation == "subtract":
+        return a - b
+    elif operation == "multiply":
+        return a * b
+    elif operation == "divide":
+        if b == 0:
+            raise ValueError("Cannot divide by zero")
+        return a / b
+    else:
+        raise ValueError("Invalid operation")
+
+
+Your tasks:
+1. Write test_add() to verify calculate(10, 20, "add") returns 30.
+2. Write test_subtract() to verify calculate(30, 10, "subtract") returns 20.
+3. Write test_multiply() to verify calculate(5, 4, "multiply") returns 20.
+4. Write test_divide() to verify calculate(20, 5, "divide") returns 4.
+5. Write test_divide_by_zero() to verify that dividing by zero raises ValueError.
+6. Write test_invalid_operation() to verify that an unsupported operation raises ValueError.
+Rules:
+- Use Pytest's assert statements.
+- Use pytest.raises() for error testing.
+- Write all code in d6_pytest.py.
+- Don't just test the function manually; run it using Pytest.
+Expected result: Six test cases should pass
