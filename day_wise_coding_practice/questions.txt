@@ -86,3 +86,31 @@ Rules:
 - Write all code in d6_pytest.py.
 - Don't just test the function manually; run it using Pytest.
 Expected result: Six test cases should pass
+
+
+
+Q7. Product Inventory Management
+File: d7_inventory.py
+
+Problem:
+
+Write a Python function called update_stock(inventory, product, quantity).
+
+The function should:
+1. Check whether the product exists in the inventory.
+2. If it exists, increase its stock by the given quantity.
+3. If the product doesn't exist, raise a ValueError.
+4. If the quantity is zero or negative, raise a ValueError.
+5. Return the updated inventory dictionary.
+
+Your tasks
+- Write the update_stock() function.
+- Test a successful stock update.
+- Test an invalid product.
+- Test zero quantity.
+- Test negative quantity.
+Rules:
+- Use a dictionary.
+- Use exception handling with ValueError.
+- Write at least four test cases using Pytest.
+- Save your solution in d7_inventory.py.
