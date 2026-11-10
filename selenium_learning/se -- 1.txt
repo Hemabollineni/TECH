@@ -1,0 +1,492 @@
+Step 2: Add Google's signing key
+wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+
+
+This downloads Google's public signing key and saves it in APT's keyring.
+Step 3: Add Google's Chrome repository
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
+
+Step 4: Install Chrome
+apt update
+apt install -y google-chrome-stable
+
+
+Step 5: Verify installation
+google-chrome --version
+
+
+Expected output will look similar to:
+Google Chrome 142.x.x.x
+
+
+
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome()
+driver.maximize_window()
+
+driver.get("https://the-internet.herokuapp.com/checkboxes")
+
+wait = WebDriverWait(driver, 15)
+
+# Find both checkboxes
+checkboxes = wait.until(
+    EC.presence_of_all_elements_located(
+        (By.CSS_SELECTOR, "input[type='checkbox']")
+    )
+)
+
+# Check the first checkbox
+print("First checkbox displayed:", checkboxes[0].is_displayed())
+print("First checkbox enabled:", checkboxes[0].is_enabled())
+print("First checkbox selected:", checkboxes[0].is_selected())
+
+# Check the second checkbox
+print("Second checkbox displayed:", checkboxes[1].is_displayed())
+print("Second checkbox enabled:", checkboxes[1].is_enabled())
+print("Second checkbox selected:", checkboxes[1].is_selected())
+
+driver.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import pytest
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
+URL = "https://www.amazon.in/"
+
+
+@pytest.fixture
+def driver():
+
+    # Open Chrome
+    browser = webdriver.Chrome()
+
+    # Maximize browser
+    browser.maximize_window()
+
+    yield browser
+
+    # Close browser after every test
+    browser.quit()
+
+
+# TC01: Open Amazon
+def test_open_amazon(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)	
+
+    wait.until(
+        EC.presence_of_element_located((By.ID, "twotabsearchtextbox"))
+    )
+
+    assert "Amazon" in driver.title
+
+    print("Amazon opened successfully")
+
+
+# TC02: Search iPhone and verify top 5 results
+def test_iphone_search_results(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    search_box = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "twotabsearchtextbox")
+        )
+    )
+
+    search_box.send_keys("iPhone")
+
+    driver.find_element(
+        By.ID, "nav-search-submit-button"
+    ).click()
+
+    results = wait.until(
+        EC.presence_of_all_elements_located(
+            (By.CSS_SELECTOR,
+             "[data-component-type='s-search-result']")
+        )
+    )
+
+    # Get product titles
+    product_titles = []
+
+    for result in results:
+
+        title_element = result.find_elements(
+            By.CSS_SELECTOR, "h2 span"
+        )
+
+        if title_element:
+            product_titles.append(title_element[0].text)
+
+        if len(product_titles) == 5:
+            break
+
+    print("Top 5 search results:")
+
+    for title in product_titles:
+        print(title)
+
+    assert len(product_titles) == 5
+
+    # Verify all five results are iPhone-related
+    for title in product_titles:
+        assert "iphone" in title.lower(), (
+            f"Unrelated product found: {title}"
+        )
+
+
+# TC03: Verify sponsored iPhone-related products
+def test_sponsored_products(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    search_box = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "twotabsearchtextbox")
+        )
+    )
+
+    search_box.send_keys("iPhone")
+
+    driver.find_element(
+        By.ID, "nav-search-submit-button"
+    ).click()
+
+    wait.until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR,
+             "[data-component-type='s-search-result']")
+        )
+    )
+
+    sponsored_products = []
+
+    results = driver.find_elements(
+        By.CSS_SELECTOR,
+        "[data-component-type='s-search-result']"
+    )
+
+    for result in results:
+
+        sponsored_labels = result.find_elements(
+            By.XPATH,
+            ".//*[contains(translate(normalize-space(.), "
+            "'SPONSORED', 'sponsored'), 'sponsored')]"
+        )
+
+        if sponsored_labels:
+
+            titles = result.find_elements(
+                By.CSS_SELECTOR, "h2 span"
+            )
+
+            if titles and titles[0].text.strip():
+                sponsored_products.append(titles[0].text)
+
+    print("Sponsored products:")
+
+    for title in sponsored_products:
+        print(title)
+
+    if sponsored_products:
+
+        for title in sponsored_products:
+            assert "iphone" in title.lower(), (
+                f"Unrelated sponsored product: {title}"
+            )
+
+        print("Sponsored products are related to iPhone")
+
+    else:
+        pytest.skip("No sponsored products found in this search")
+
+
+# TC04: Accounts & Lists dropdown working or not
+def test_accounts_dropdown(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    account_menu = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-link-accountList")
+        )
+    )
+
+    ActionChains(driver).move_to_element(
+        account_menu
+    ).perform()
+
+    dropdown = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-al-your-account")
+        )
+    )
+
+    assert dropdown.is_displayed()
+
+    print("Accounts & Lists dropdown is working")
+
+
+# TC05: Verify items in Accounts & Lists dropdown
+def test_accounts_menu_items(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    account_menu = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-link-accountList")
+        )
+    )
+
+    ActionChains(driver).move_to_element(
+        account_menu
+    ).perform()
+
+    dropdown = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-al-your-account")
+        )
+    )
+
+    menu_items = dropdown.find_elements(
+        By.CSS_SELECTOR, "a"
+    )
+
+    menu_texts = [
+        item.text.strip()
+        for item in menu_items
+        if item.text.strip()
+    ]
+
+    print("Accounts & Lists menu items:")
+
+    for item in menu_texts:
+        print(item)
+
+    expected_items = [
+        "Your Account",
+        "Your Orders",
+        "Your Wish List"
+    ]
+
+    for expected in expected_items:
+
+        assert any(
+            expected.lower() in item.lower()
+            for item in menu_texts
+        ), f"Missing menu item: {expected}"
+
+
+# TC06: Change language dropdown working or not
+def test_language_dropdown(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    language_menu = wait.until(
+        EC.presence_of_element_located(
+            (By.ID, "icp-nav-flyout")
+        )
+    )
+
+    ActionChains(driver).move_to_element(
+        language_menu
+    ).perform()
+
+    dropdown = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-flyout-icp")
+        )
+    )
+
+    assert dropdown.is_displayed()
+
+    print("Language dropdown is working")
+
+
+# TC07: Count available languages
+def test_count_languages(driver):
+
+    driver.get(URL)
+
+    wait = WebDriverWait(driver, 15)
+
+    language_menu = wait.until(
+        EC.presence_of_element_located(
+            (By.ID, "icp-nav-flyout")
+        )
+    )
+
+    ActionChains(driver).move_to_element(
+        language_menu
+    ).perform()
+
+    dropdown = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "nav-flyout-icp")
+        )
+    )
+
+    # Find language radio buttons
+    languages = dropdown.find_elements(
+        By.CSS_SELECTOR, "input[name='lop']"
+    )
+
+    language_names = []
+
+    for language in languages:
+
+        labels = language.find_elements(
+            By.XPATH, "./following-sibling::label"
+        )
+
+        if labels:
+            name = labels[0].text.strip()
+
+            if name:
+                language_names.append(name)
+
+    print("Available languages:")
+
+    for language in language_names:
+        print(language)
+
+    print("Total languages:", len(language_names))
+
+    assert len(language_names) > 0, (
+        "No languages found in dropdown"
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.
