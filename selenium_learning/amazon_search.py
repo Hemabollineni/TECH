@@ -45,7 +45,7 @@ wait.until(
 print("Search results loaded!")
 
 # 8. Keep browser open
-time.sleep(15)
+time.sleep(10)
 
 # 9. Close browser
 driver.quit()

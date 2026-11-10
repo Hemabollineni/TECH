@@ -1,0 +1,169 @@
+myenv\Scripts\activate
+
+Selenium:
+----------
+Selenium is an open-source tool used to automate web browsers.
+
+It allows Python programs to control browsers such as Chrome, Firefox, and Edge.
+
+
+
+we have 4 components like: selenium IDE, selenium RC(Remote Control), selenium Web driver and Selenium Grid
+
+Component		Main purpose
+Selenium IDE		Record and playback
+Selenium WebDriver	Browser automation using code
+Selenium Grid		Parallel and cross-browser testing
+Selenium RC		Older browser automation approach
+
+WEB DRIVER:-
+===========
+Selenium WebDriver is a tool/API that allows us to automate web browsers using programming languages such as Python, Java, and JavaScript.
+
+Selenium WebDriver sub-components:
+-----------------------------------
+Component			Purpose
+WebDriver			Controls the browser
+WebElement			Represents an HTML/web page element
+By				Identifies elements using locators
+Keys				Provides keyboard actions
+WebDriverWait			Waits for specific conditions
+Expected Conditions (EC)	Defines conditions for explicit waits
+Options				Configures browser settings
+Service				Configures the browser driver service
+
+webdriver.Chrome() starts a Chrome browser session.
+driver stores the browser control object.
+
+
+Method			Purpose
+driver.get(url)		Opens a website
+driver.back()		Goes to the previous page
+driver.forward()	Goes to the next page
+driver.refresh()	Refreshes the current page
+
+
+Method / Attribute	Purpose
+driver.title		Gets the webpage title
+driver.current_url	Gets the current URL
+driver.page_source	Gets the page's HTML source
+driver.name		Gets the browser name
+
+
+Browser window methods
+Method					Purpose
+driver.maximize_window()		Maximizes browser window
+driver.minimize_window()		Minimizes browser window
+driver.fullscreen_window()		Opens browser in fullscreen
+driver.set_window_size(1000, 800)	Sets browser width and height
+driver.get_window_size()		Gets browser dimensions
+
+
+Browser closing methods
+Method		Purpose
+driver.close()	Closes the current browser window
+driver.quit()	Closes all browser windows and ends the WebDriver session
+
+
+
+Element interaction methods
+These are particularly important in Selenium automation.
+Method				Purpose
+driver.find_element()		Finds one web element
+driver.find_elements()		Finds multiple web elements
+element.click()			Clicks an element
+element.send_keys()		Enters text
+element.clear()			Clears entered text
+element.text			Gets visible text
+element.get_attribute()		Gets an HTML attribute
+
+
+
+Browser tab and window methods
+Method / Attribute			Purpose
+driver.switch_to.window()		Switches between browser windows
+driver.current_window_handle		Gets current window ID
+driver.window_handles			Gets all open window IDs
+driver.switch_to.new_window("tab")	Opens a new tab
+driver.switch_to.new_window("window")	Opens a new window
+
+
+
+Wait methods
+Sometimes webpages take time to load. Selenium provides wait methods.
+Method				Purpose
+driver.implicitly_wait(10)	Sets implicit wait
+WebDriverWait()			Waits for a specific condition
+time.sleep(5)			Pauses Python execution for 5 seconds
+
+
+Q: What is the difference between Selenium and Selenium WebDriver?
+"Selenium is an open-source browser automation suite. 
+ Selenium WebDriver is an API within Selenium that allows us to automate web browsers 
+ using programming languages like Python, Java and JavaScript."
+
+			Selenium = Overall automation suite
+			Selenium WebDriver = Browser automation using code
+
+
+
+locators:-
+=========
+A locator is a way to identify an HTML element on a webpage so Selenium can interact with it.
+
+Types of Selenium locators:
+-----------------------------
+Locator			Purpose
+ID			Finds an element using its ID
+NAME			Finds an element using its name
+CLASS_NAME		Finds an element using its class
+TAG_NAME		Finds an element using its HTML tag
+LINK_TEXT		Finds a link using its complete text
+PARTIAL_LINK_TEXT	Finds a link using part of its text
+CSS_SELECTOR		Finds an element using CSS selectors
+XPATH			Finds an element using XPath expressions
+
+
+
+WebElement:
+===========
+A WebElement is Selenium's representation of an individual HTML element on a webpage.
+
+WebElement interactions:-[notepad element_actions.py]
+--------------------------
+how to interact with elements on a webpage, not just locate them.
+
+Operation		Purpose
+click()			Click a button or link
+send_keys()		Enter text
+clear()			Clear entered text
+.text			Read visible text
+get_attribute()		Read an HTML attribute
+
+
+
+Two practical examples:
+1. Enter iPhone in Amazon's search box, then clear it.
+2. Enter Samsung and submit the search.
+
+WebElement methods click() & read text
+WebElement state-checking methods. 	Method		Purpose
+				   	is_displayed()	Checks whether an element is visible
+				   	is_enabled()	Checks whether an element is enabled
+				   	is_selected()	Checks whether a checkbox or radio button is selected
+
+
+Handling dropdowns using Selenium
+
+
+
+
+
+
+
+
+
+
+
+
+
